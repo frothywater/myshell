@@ -27,7 +27,7 @@ class Command(ABC):
         self.output.write(s)
 
     def error(self, s: str):
-        print(f"${self.name}: ${s}")
+        print(f"{self.name}: {s}")
 
     @abstractmethod
     def run(self, args: list[str], input: Optional[StringIO]):
