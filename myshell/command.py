@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class CommandResult:
-    def __init__(self, output: StringIO, exit_code: int = 0):
+    def __init__(self, output: Optional[StringIO] = None, exit_code: int = 0):
         self.output = output
         self.exit_code = exit_code
 
@@ -25,6 +25,9 @@ class Command(ABC):
 
     def log(self, s: str):
         self.output.write(s)
+
+    def error(self, s: str):
+        print(f"${self.name}: ${s}")
 
     @abstractmethod
     def run(self, args: list[str], input: Optional[StringIO] = None) -> CommandResult:

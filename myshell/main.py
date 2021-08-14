@@ -1,18 +1,32 @@
+from myshell.commands.cd import ChangeDirectoryCommand
+from myshell.commands.clr import ClearCommand
+from myshell.commands.echo import EchoCommand
+from myshell.commands.pwd import PrintWorkingDirectoryCommand
 from myshell.commands.time import TimeCommand
 
-command_dict = {"time": TimeCommand}
+command_dict = {
+    "time": TimeCommand,
+    "clr": ClearCommand,
+    "pwd": PrintWorkingDirectoryCommand,
+    "echo": EchoCommand,
+    "cd": ChangeDirectoryCommand,
+}
 
 
 def execute(args: list[str]):
     if len(args) == 0:
         return
     name = args[0]
-    command = command_dict[name]()
-    if command:
+    if name in command_dict:
+        command = command_dict[name]()
         result = command.run(args[1:])
         output = result.output
-        print(output.getvalue())
-        output.close()
+        if output is not None:
+            s = output.getvalue()
+            if s[-1] == "\n":
+                s = s[: len(s) - 1]
+            print(s)
+            output.close()
 
 
 def main():
