@@ -4,6 +4,7 @@ from myshell.commands.echo import EchoCommand
 from myshell.commands.pwd import PrintWorkingDirectoryCommand
 from myshell.commands.set import SetEnvironCommand
 from myshell.commands.time import TimeCommand
+from myshell.commands.unset import UnsetEnvironCommand
 
 command_dict = {
     "time": TimeCommand,
@@ -12,6 +13,7 @@ command_dict = {
     "echo": EchoCommand,
     "cd": ChangeDirectoryCommand,
     "set": SetEnvironCommand,
+    "unset": UnsetEnvironCommand,
 }
 
 
