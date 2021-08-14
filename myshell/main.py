@@ -1,0 +1,28 @@
+from myshell.commands.time import TimeCommand
+
+command_dict = {"time": TimeCommand}
+
+
+def execute(args: list[str]):
+    if len(args) == 0:
+        return
+    name = args[0]
+    command = command_dict[name]()
+    if command:
+        result = command.run(args[1:])
+        output = result.output
+        print(output.getvalue())
+        output.close()
+
+
+def main():
+    while True:
+        command = input("$ ")
+        command = command.strip()
+        if command == "exit" or command.startswith("exit "):
+            break
+        execute(command.split())
+
+
+if __name__ == "__main__":
+    main()
