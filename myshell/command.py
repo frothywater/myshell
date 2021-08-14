@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class CommandResult:
-    def __init__(self, output: Optional[StringIO] = None, exit_code: int = 0):
+    def __init__(self, output: StringIO, exit_code: int = 0):
         self.output = output
         self.exit_code = exit_code
 
@@ -30,8 +30,14 @@ class Command(ABC):
         print(f"${self.name}: ${s}")
 
     @abstractmethod
-    def run(self, args: list[str], input: Optional[StringIO] = None) -> CommandResult:
+    def run(self, args: list[str], input: Optional[StringIO]):
         raise NotImplementedError
+
+    def execute(
+        self, args: list[str], input: Optional[StringIO] = None
+    ) -> CommandResult:
+        self.run(args, input)
+        return CommandResult(self.output)
 
     def __str__(self) -> str:
         return f"${self.name}"

@@ -2,6 +2,7 @@ from myshell.commands.cd import ChangeDirectoryCommand
 from myshell.commands.clr import ClearCommand
 from myshell.commands.echo import EchoCommand
 from myshell.commands.pwd import PrintWorkingDirectoryCommand
+from myshell.commands.set import SetEnvironCommand
 from myshell.commands.time import TimeCommand
 
 command_dict = {
@@ -10,6 +11,7 @@ command_dict = {
     "pwd": PrintWorkingDirectoryCommand,
     "echo": EchoCommand,
     "cd": ChangeDirectoryCommand,
+    "set": SetEnvironCommand,
 }
 
 
@@ -19,14 +21,13 @@ def execute(args: list[str]):
     name = args[0]
     if name in command_dict:
         command = command_dict[name]()
-        result = command.run(args[1:])
-        output = result.output
-        if output is not None:
-            s = output.getvalue()
+        result = command.execute(args[1:])
+        s = result.output.getvalue()
+        result.output.close()
+        if len(s) > 0:
             if s[-1] == "\n":
                 s = s[: len(s) - 1]
             print(s)
-            output.close()
 
 
 def main():
