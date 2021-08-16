@@ -14,6 +14,8 @@ class ChangeDirectoryCommand(Command):
             path = args[0]
             if not os.access(path, os.F_OK):
                 self.error(f"not such file or directory: {path}")
+                return
             if not os.path.isdir(path):
                 self.error(f"not a directory: {path}")
+                return
             os.chdir(path)
