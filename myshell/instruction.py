@@ -3,6 +3,7 @@ from typing import Optional, TextIO
 from myshell.commands import command_dict as original_dict
 from myshell.commands.help import HelpCommand
 from myshell.commands.other import OtherCommand
+from myshell.context import Context
 from myshell.error import ParsingError
 
 command_dict = original_dict.copy()
@@ -61,7 +62,8 @@ class Instruction:
         command = command_dict[self.name]() if self.name is not None else OtherCommand()
         in_ = self.input_file if self.input_file is not None else fallback_in
         out = self.output_file if self.output_file is not None else fallback_out
-        command.execute(self.args, in_, out, err)
+        self.context = Context(in_, out, err)
+        command.execute(self.args, self.context)
         if self.input_file is not None:
             self.input_file.close()
         if self.output_file is not None:

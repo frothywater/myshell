@@ -1,5 +1,6 @@
 import os
-from typing import TextIO
+
+from myshell.context import Context
 
 
 from myshell.command import Command
@@ -11,6 +12,6 @@ class SetEnvironCommand(Command):
             "set", description="show all environment variables", usage="set"
         )
 
-    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
+    def execute(self, args: list[str], context: Context):
         for key, value in os.environ.items():
-            out.write(f"{key}={value}\n")
+            context.out.write(f"{key}={value}\n")

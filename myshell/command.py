@@ -1,4 +1,4 @@
-from typing import TextIO
+from myshell.context import Context
 
 
 class Command:
@@ -14,7 +14,7 @@ class Command:
         self.usage = usage
         self.flags = flags
 
-    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
+    def execute(self, args: list[str], context: Context):
         pass
 
     def help_str(self) -> str:

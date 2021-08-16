@@ -1,7 +1,8 @@
 import os
-from typing import Callable, TextIO
+from typing import Callable
 
 from myshell.command import Command
+from myshell.context import Context
 
 
 class TestCommand(Command):
@@ -45,18 +46,18 @@ class TestCommand(Command):
     def test_number(self, flag: str, num1: int, num2: int) -> bool:
         return self.number_check_dict[flag](num1, num2)
 
-    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
+    def execute(self, args: list[str], context: Context):
         if len(args) == 2 and args[0] in self.file_check_dict:
             result = self.test_file(flag=args[0], path=args[1])
-            out.write(f"exit {int(not result)}\n")
+            context.out.write(f"exit {int(not result)}\n")
         elif len(args) == 3 and args[1] in self.number_check_dict:
             try:
                 num1 = int(args[0], 10)
             except ValueError:
-                err.write(f"not a number: {args[0]}\n")
+                context.err.write(f"not a number: {args[0]}\n")
             try:
                 num2 = int(args[2], 10)
             except ValueError:
-                err.write(f"not a number: {args[2]}\n")
+                context.err.write(f"not a number: {args[2]}\n")
             result = self.test_number(flag=args[1], num1=num1, num2=num2)
-            out.write(f"exit {int(not result)}\n")
+            context.out.write(f"exit {int(not result)}\n")
