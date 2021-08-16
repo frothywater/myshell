@@ -40,4 +40,12 @@ class Command(ABC):
         return CommandResult(self.output)
 
     def __str__(self) -> str:
-        return f"${self.name}"
+        flag_str = "\n".join([f"{key}  {value}" for key, value in self.flags.items()])
+        result = f"{self.name}"
+        if self.description != "":
+            result += f": {self.description}\n"
+        if self.usage != "":
+            result += f"usage: {self.usage}\n"
+        if len(self.flags) > 0:
+            result += f"flags: {flag_str}"
+        return result
