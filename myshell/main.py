@@ -1,28 +1,10 @@
 import os
 
-from myshell.commands.cd import ChangeDirectoryCommand
-from myshell.commands.clr import ClearCommand
-from myshell.commands.dir import DirectoryInfoCommand
-from myshell.commands.echo import EchoCommand
-from myshell.commands.pwd import PrintWorkingDirectoryCommand
-from myshell.commands.set import SetEnvironCommand
-from myshell.commands.test import TestCommand
-from myshell.commands.time import TimeCommand
-from myshell.commands.umask import UmaskCommand
-from myshell.commands.unset import UnsetEnvironCommand
+from myshell.commands.help import HelpCommand
+from myshell.dict import command_dict as original_dict
 
-command_dict = {
-    "time": TimeCommand,
-    "clr": ClearCommand,
-    "pwd": PrintWorkingDirectoryCommand,
-    "echo": EchoCommand,
-    "cd": ChangeDirectoryCommand,
-    "set": SetEnvironCommand,
-    "unset": UnsetEnvironCommand,
-    "umask": UmaskCommand,
-    "dir": DirectoryInfoCommand,
-    "test": TestCommand,
-}
+command_dict = original_dict.copy()
+command_dict["help"] = HelpCommand
 
 
 def execute(args: list[str]):
@@ -40,9 +22,15 @@ def execute(args: list[str]):
             print(s)
 
 
+def set_env():
+    print(__file__)
+    os.environ["shell"] = __file__
+
+
 def main():
+    set_env()
     while True:
-        command = input(f"{os.getcwd()} $ ")
+        command = input(f"({os.getcwd()}) $ ")
         command = command.strip()
         if command == "exit" or command.startswith("exit "):
             break
