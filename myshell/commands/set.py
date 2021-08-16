@@ -7,7 +7,9 @@ from myshell.command import Command
 
 class SetEnvironCommand(Command):
     def __init__(self):
-        super().__init__("set")
+        super().__init__(
+            "set", description="show all environment variables", usage="set"
+        )
 
     def run(self, args: list[str], input: Optional[StringIO]):
         for key, value in os.environ.items():

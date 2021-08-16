@@ -7,7 +7,9 @@ from myshell.command import Command
 
 class TimeCommand(Command):
     def __init__(self):
-        super().__init__("time")
+        super().__init__(
+            "time", description="print current date and time", usage="time"
+        )
 
     def run(self, args: list[str], input: Optional[StringIO]):
         self.log(datetime.now().strftime("%c"))

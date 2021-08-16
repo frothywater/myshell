@@ -9,7 +9,6 @@ class TestCommand(Command):
     file_check_dict: dict[str, Callable[[str], bool]] = {
         "-d": lambda path: os.path.isdir(path),
         "-f": lambda path: os.path.isfile(path),
-        "-h": lambda path: os.path.islink(path),
         "-L": lambda path: os.path.islink(path),
     }
 
@@ -23,7 +22,23 @@ class TestCommand(Command):
     }
 
     def __init__(self):
-        super().__init__("test")
+        super().__init__(
+            "test",
+            description="test expression related to file or numbers",
+            usage="""test [-d file] [-f file] [-h file] [-L file]
+[num -eq num] [num -ne num] [num -gt num] [num -ge num] [num -lt num] [num -le num]
+
+-f      checks if file is an ordinary file
+-d      checks if file is a directory
+-L      checks if file is a symbolic link
+
+-eq     checks if the value of two operands are equal or not
+-ne     checks if the value of two operands are equal or not
+-gt     checks if the value of left operand is greater than the value of right operand
+-lt     checks if the value of left operand is less than the value of right operand
+-ge     checks if the value of left operand is greater than or equal to the value of right operand
+-le     checks if the value of left operand is less than or equal to the value of right operand""",
+        )
 
     def test_file(self, flag: str, path: str) -> bool:
         return self.file_check_dict[flag](path)

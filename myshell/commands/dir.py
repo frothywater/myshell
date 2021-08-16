@@ -7,7 +7,9 @@ from myshell.command import Command
 
 class DirectoryInfoCommand(Command):
     def __init__(self):
-        super().__init__("dir")
+        super().__init__(
+            "dir", description="list all files in directory", usage="dir [<path>]"
+        )
 
     def run(self, args: list[str], input: Optional[StringIO]):
         path = os.getcwd() if len(args) == 0 else args[0]

@@ -7,7 +7,11 @@ from myshell.command import Command
 
 class UnsetEnvironCommand(Command):
     def __init__(self):
-        super().__init__("unset")
+        super().__init__(
+            "unset",
+            description="unset environment variable",
+            usage="unset <key> [...keys]",
+        )
 
     def run(self, args: list[str], input: Optional[StringIO]):
         for key in args:

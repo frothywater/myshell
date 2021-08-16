@@ -7,7 +7,7 @@ from myshell.command import Command
 
 class ChangeDirectoryCommand(Command):
     def __init__(self):
-        super().__init__("cd")
+        super().__init__("cd", description="change directory", usage="cd <dir>")
 
     def run(self, args: list[str], input: Optional[StringIO]):
         if len(args) > 0:

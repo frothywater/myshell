@@ -7,7 +7,7 @@ from myshell.command import Command
 
 class PrintWorkingDirectoryCommand(Command):
     def __init__(self):
-        super().__init__("pwd")
+        super().__init__("pwd", description="print working directory", usage="pwd")
 
     def run(self, args: list[str], input: Optional[StringIO]):
         self.log(os.getcwd())

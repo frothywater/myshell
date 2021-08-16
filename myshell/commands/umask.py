@@ -7,7 +7,7 @@ from myshell.command import Command
 
 class UmaskCommand(Command):
     def __init__(self):
-        super().__init__("umask")
+        super().__init__("umask", description="get or set umask", usage="umask [mask]")
 
     def run(self, args: list[str], input: Optional[StringIO]):
         if len(args) == 0:
