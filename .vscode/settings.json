@@ -3,7 +3,6 @@
   "python.linting.lintOnSave": true,
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": true,
-  "python.linting.flake8Args": ["--max-line-length=88"],
   "python.linting.mypyEnabled": true,
   "python.formatting.provider": "black",
   "editor.formatOnSaveMode": "file",
