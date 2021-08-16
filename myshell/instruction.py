@@ -1,4 +1,5 @@
-from typing import Optional, TextIO
+from copy import copy
+from typing import Optional
 
 from myshell.commands import command_dict as original_dict
 from myshell.commands.help import HelpCommand
@@ -25,17 +26,15 @@ def get_redirection(args: list[str], symbol: str) -> Optional[str]:
 
 
 class Instruction:
-    def __init__(self, args: list[str]):
+    def __init__(self, args: list[str], context: Context):
         self.name: Optional[str] = None
-        self.input_file: Optional[TextIO] = None
-        self.output_file: Optional[TextIO] = None
+        self.context = copy(context)
 
         input_path = get_redirection(args, "<")
         output_path = get_redirection(args, ">")
-
         if input_path is not None:
             try:
-                self.input_file = open(input_path, mode="r", encoding="utf-8")
+                self.in_ = open(input_path, mode="r", encoding="utf-8")
             except FileNotFoundError:
                 print(f"myshell: no such file: {input_path}")
                 raise ParsingError
@@ -44,11 +43,9 @@ class Instruction:
                 raise ParsingError
         if output_path is not None:
             try:
-                self.output_file = open(output_path, mode="w", encoding="utf-8")
+                self.out_ = open(output_path, mode="w", encoding="utf-8")
             except OSError:
                 print(f"myshell: cannot write file: {output_path}")
-                if self.input_file is not None:
-                    self.input_file.close()
                 raise ParsingError
 
         if len(args) == 0:
@@ -58,13 +55,6 @@ class Instruction:
             del args[0]
         self.args = args
 
-    def execute(self, fallback_in: TextIO, fallback_out: TextIO, err: TextIO):
+    async def execute(self, context: Context):
         command = command_dict[self.name]() if self.name is not None else OtherCommand()
-        in_ = self.input_file if self.input_file is not None else fallback_in
-        out = self.output_file if self.output_file is not None else fallback_out
-        self.context = Context(in_, out, err)
-        command.execute(self.args, self.context)
-        if self.input_file is not None:
-            self.input_file.close()
-        if self.output_file is not None:
-            self.output_file.close()
+        await command.execute(self.args, self.context)

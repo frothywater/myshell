@@ -1,15 +1,15 @@
+import asyncio
 import os
 import signal
 import sys
 
-from myshell.job import Job
+from myshell.context import Context
+from myshell.pipeline import Pipeline
 
 
 class App:
     def __init__(self):
-        self.in_ = sys.stdin
-        self.out = sys.stdout
-        self.err = sys.stderr
+        self.context = Context(sys.stdin, sys.stdout, sys.stderr)
 
     def handle_sigint(self, signum, frame):
         pass
@@ -22,22 +22,20 @@ class App:
         signal.signal(signal.SIGINT, self.handle_sigint)
         signal.signal(signal.SIGTSTP, self.handle_sigtstp)
 
-    def run(self):
+    async def run(self):
         while True:
             s = input(f"({os.getcwd()}) $ ")
             s = s.strip()
             if s == "exit" or s.startswith("exit "):
                 break
-            job = Job(s)
-            job.execute()
-
-
-app = App()
+            pipeline = Pipeline(s, context=self.context)
+            await pipeline.execute()
 
 
 def main():
+    app = App()
     app.bootstrap()
-    app.run()
+    asyncio.run(app.run())
 
 
 if __name__ == "__main__":

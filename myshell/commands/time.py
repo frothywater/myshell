@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from myshell.context import Context
-
 from myshell.command import Command
+from myshell.context import Context
 
 
 class TimeCommand(Command):
@@ -11,5 +10,6 @@ class TimeCommand(Command):
             "time", description="print current date and time", usage="time"
         )
 
-    def execute(self, args: list[str], context: Context):
-        context.out.write(datetime.now().strftime("%c") + "\n")
+    async def execute(self, args: list[str], context: Context):
+        context.write(datetime.now().strftime("%c") + "\n")
+        context.close_all()

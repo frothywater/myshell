@@ -14,7 +14,7 @@ class Command:
         self.usage = usage
         self.flags = flags
 
-    def execute(self, args: list[str], context: Context):
+    async def execute(self, args: list[str], context: Context):
         pass
 
     def help_str(self) -> str:
