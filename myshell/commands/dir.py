@@ -1,6 +1,5 @@
 import os
-from io import StringIO
-from typing import Optional
+from typing import TextIO
 
 from myshell.command import Command
 
@@ -11,13 +10,14 @@ class DirectoryInfoCommand(Command):
             "dir", description="list all files in directory", usage="dir [<path>]"
         )
 
-    def run(self, args: list[str], input: Optional[StringIO]):
+    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
         path = os.getcwd() if len(args) == 0 else args[0]
         if not os.access(path, os.F_OK):
-            self.error(f"not such file or directory: {path}")
+            err.write(f"not such file or directory: {path}\n")
             return
         if not os.path.isdir(path):
-            self.error(f"not a directory: {path}")
+            err.write(f"not a directory: {path}\n")
             return
         for entry in os.listdir(path):
-            self.log(f"{entry}  ")
+            out.write(f"{entry}  ")
+        out.write("\n")

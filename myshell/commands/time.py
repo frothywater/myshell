@@ -1,6 +1,5 @@
 from datetime import datetime
-from io import StringIO
-from typing import Optional
+from typing import TextIO
 
 from myshell.command import Command
 
@@ -11,5 +10,5 @@ class TimeCommand(Command):
             "time", description="print current date and time", usage="time"
         )
 
-    def run(self, args: list[str], input: Optional[StringIO]):
-        self.log(datetime.now().strftime("%c"))
+    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
+        out.write(datetime.now().strftime("%c") + "\n")

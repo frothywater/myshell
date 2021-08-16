@@ -1,6 +1,6 @@
 import os
-from io import StringIO
-from typing import Optional
+from typing import TextIO
+
 
 from myshell.command import Command
 
@@ -13,7 +13,7 @@ class UnsetEnvironCommand(Command):
             usage="unset <key> [...keys]",
         )
 
-    def run(self, args: list[str], input: Optional[StringIO]):
+    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
         for key in args:
             if key in os.environ.keys():
                 _ = os.environ.pop(key)

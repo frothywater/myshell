@@ -1,18 +1,17 @@
-from io import StringIO
-from typing import Optional
+from typing import TextIO
 
 from myshell.command import Command
-from myshell.dict import command_dict
+from myshell.commands import command_dict
 
 
 class HelpCommand(Command):
     def __init__(self):
         super().__init__("help")
 
-    def run(self, args: list[str], input: Optional[StringIO]):
+    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
         if len(args) > 0:
             name = args[0]
             if name in command_dict:
-                self.log(str(command_dict[name]()))
+                out.write(command_dict[name]().help_str())
             else:
-                self.error(f"no entry for {name}")
+                err.write(f"no entry for {name}\n")

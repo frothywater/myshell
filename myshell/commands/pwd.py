@@ -1,6 +1,5 @@
 import os
-from io import StringIO
-from typing import Optional
+from typing import TextIO
 
 from myshell.command import Command
 
@@ -9,5 +8,5 @@ class PrintWorkingDirectoryCommand(Command):
     def __init__(self):
         super().__init__("pwd", description="print working directory", usage="pwd")
 
-    def run(self, args: list[str], input: Optional[StringIO]):
-        self.log(os.getcwd())
+    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
+        out.write(os.getcwd() + "\n")

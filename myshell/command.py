@@ -1,23 +1,7 @@
-from abc import ABC, abstractmethod
-from io import StringIO
-from typing import Optional
+from typing import TextIO
 
 
-class CommandResult:
-    def __init__(self, output: StringIO, exit_code: int = 0):
-        self.output = output
-        self.exit_code = exit_code
-
-    def print(self):
-        s = self.output.getvalue()
-        self.output.close()
-        if len(s) > 0 and s[-1] == "\n":
-            s = s[: len(s) - 1]
-        if len(s) > 0:
-            print(s)
-
-
-class Command(ABC):
+class Command:
     def __init__(
         self,
         name: str,
@@ -29,25 +13,11 @@ class Command(ABC):
         self.description = description
         self.usage = usage
         self.flags = flags
-        self.output = StringIO()
 
-    def log(self, s: str):
-        self.output.write(s)
+    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
+        pass
 
-    def error(self, s: str):
-        print(f"{self.name}: {s}")
-
-    @abstractmethod
-    def run(self, args: list[str], input: Optional[StringIO]):
-        raise NotImplementedError
-
-    def execute(
-        self, args: list[str], input: Optional[StringIO] = None
-    ) -> CommandResult:
-        self.run(args, input)
-        return CommandResult(self.output)
-
-    def __str__(self) -> str:
+    def help_str(self) -> str:
         flag_str = "\n".join([f"{key}  {value}" for key, value in self.flags.items()])
         result = f"{self.name}"
         if self.description != "":
@@ -55,5 +25,5 @@ class Command(ABC):
         if self.usage != "":
             result += f"usage: {self.usage}\n"
         if len(self.flags) > 0:
-            result += f"flags: {flag_str}"
+            result += f"flags: {flag_str}\n"
         return result

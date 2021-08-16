@@ -1,5 +1,4 @@
-from io import StringIO
-from typing import Optional
+from typing import TextIO
 
 from myshell.command import Command
 
@@ -8,6 +7,6 @@ class EchoCommand(Command):
     def __init__(self):
         super().__init__("echo", description="print text", usage="echo <text>")
 
-    def run(self, args: list[str], input: Optional[StringIO]):
+    def execute(self, args: list[str], in_: TextIO, out: TextIO, err: TextIO):
         if len(args) > 0:
-            self.log(args[0] + "\n")
+            out.write(args[0] + "\n")
