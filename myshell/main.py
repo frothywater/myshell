@@ -1,5 +1,8 @@
+import os
+
 from myshell.commands.cd import ChangeDirectoryCommand
 from myshell.commands.clr import ClearCommand
+from myshell.commands.dir import DirectoryInfoCommand
 from myshell.commands.echo import EchoCommand
 from myshell.commands.pwd import PrintWorkingDirectoryCommand
 from myshell.commands.set import SetEnvironCommand
@@ -16,6 +19,7 @@ command_dict = {
     "set": SetEnvironCommand,
     "unset": UnsetEnvironCommand,
     "umask": UmaskCommand,
+    "dir": DirectoryInfoCommand,
 }
 
 
@@ -36,7 +40,7 @@ def execute(args: list[str]):
 
 def main():
     while True:
-        command = input("$ ")
+        command = input(f"{os.getcwd()} $ ")
         command = command.strip()
         if command == "exit" or command.startswith("exit "):
             break
