@@ -54,6 +54,7 @@ class Job:
             instruction.execute(in_, out, sys.stderr)
             in_buffer.close()
             in_buffer = out_buffer
+            in_buffer.seek(0)
             out_buffer = StringIO()
         in_buffer.close()
         out_buffer.close()
