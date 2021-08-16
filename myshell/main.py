@@ -1,6 +1,7 @@
 import os
 
 from myshell.commands.help import HelpCommand
+from myshell.commands.other import OtherCommand
 from myshell.dict import command_dict as original_dict
 
 command_dict = original_dict.copy()
@@ -14,12 +15,9 @@ def execute(args: list[str]):
     if name in command_dict:
         command = command_dict[name]()
         result = command.execute(args[1:])
-        s = result.output.getvalue()
-        result.output.close()
-        if len(s) > 0:
-            if s[-1] == "\n":
-                s = s[: len(s) - 1]
-            print(s)
+    else:
+        result = OtherCommand().execute(args)
+    result.print()
 
 
 def set_env():

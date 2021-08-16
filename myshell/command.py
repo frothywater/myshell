@@ -8,6 +8,14 @@ class CommandResult:
         self.output = output
         self.exit_code = exit_code
 
+    def print(self):
+        s = self.output.getvalue()
+        self.output.close()
+        if len(s) > 0 and s[-1] == "\n":
+            s = s[: len(s) - 1]
+        if len(s) > 0:
+            print(s)
+
 
 class Command(ABC):
     def __init__(
