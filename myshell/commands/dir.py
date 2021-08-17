@@ -1,7 +1,10 @@
 import os
 
 from myshell.command import Command
-from myshell.context import Context
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from myshell.context import Context
 
 
 class DirectoryInfoCommand(Command):
@@ -10,7 +13,7 @@ class DirectoryInfoCommand(Command):
             "dir", description="list all files in directory", usage="dir [<path>]"
         )
 
-    async def execute(self, args: list[str], context: Context):
+    async def execute(self, args: list[str], context: "Context"):
         path = os.getcwd() if len(args) == 0 else args[0]
         if not os.access(path, os.F_OK):
             context.error(f"not such file or directory: {path}\n")

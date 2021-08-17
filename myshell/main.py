@@ -1,21 +1,21 @@
 import asyncio
 import os
 import signal
-import sys
 
-from myshell.context import Context
-from myshell.pipeline import Pipeline
+from myshell.environment import Environment
+from myshell.error import ParsingError
 
 
 class App:
     def __init__(self):
-        self.context = Context(sys.stdin, sys.stdout, sys.stderr)
+        self.environment = Environment()
+        self.job_manager = self.environment.job_manager
 
     def handle_sigint(self, signum, frame):
-        pass
+        self.job_manager.stop()
 
     def handle_sigtstp(self, signum, frame):
-        pass
+        self.job_manager.pause()
 
     def bootstrap(self):
         os.environ["shell"] = __file__
@@ -28,8 +28,11 @@ class App:
             s = s.strip()
             if s == "exit" or s.startswith("exit "):
                 break
-            pipeline = Pipeline(s, context=self.context)
-            await pipeline.execute()
+            try:
+                await self.job_manager.execute(s)
+                await self.job_manager.wait()
+            except ParsingError:
+                self.environment.error("myshell: parsing error\n")
 
 
 def main():

@@ -1,7 +1,10 @@
+from myshell.commands.bg import BackgroundCommand
 from myshell.commands.cd import ChangeDirectoryCommand
 from myshell.commands.clr import ClearCommand
 from myshell.commands.dir import DirectoryInfoCommand
 from myshell.commands.echo import EchoCommand
+from myshell.commands.fg import ForegroundCommand
+from myshell.commands.jobs import JobsCommand
 from myshell.commands.pwd import PrintWorkingDirectoryCommand
 from myshell.commands.set import SetEnvironCommand
 from myshell.commands.test import TestCommand
@@ -20,4 +23,7 @@ command_dict = {
     "umask": UmaskCommand,
     "dir": DirectoryInfoCommand,
     "test": TestCommand,
+    "fg": ForegroundCommand,
+    "bg": BackgroundCommand,
+    "jobs": JobsCommand,
 }

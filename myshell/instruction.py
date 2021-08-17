@@ -1,10 +1,13 @@
-from copy import copy
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from myshell.commands import command_dict as original_dict
 from myshell.commands.help import HelpCommand
 from myshell.commands.other import OtherCommand
 from myshell.context import Context
+
+if TYPE_CHECKING:
+    from myshell.environment import Environment
+
 from myshell.error import ParsingError
 
 command_dict = original_dict.copy()
@@ -26,15 +29,20 @@ def get_redirection(args: list[str], symbol: str) -> Optional[str]:
 
 
 class Instruction:
-    def __init__(self, args: list[str], context: Context):
+    def __init__(self, args: list[str], environment: "Environment"):
         self.name: Optional[str] = None
-        self.context = copy(context)
+        self.args = args
+        self.context = Context(
+            environment.in_, environment.out, environment.err, environment
+        )
+        self.command_text = " ".join(args)
 
-        input_path = get_redirection(args, "<")
-        output_path = get_redirection(args, ">")
+    def set_redirection(self):
+        input_path = get_redirection(self.args, "<")
+        output_path = get_redirection(self.args, ">")
         if input_path is not None:
             try:
-                self.in_ = open(input_path, mode="r", encoding="utf-8")
+                self.context.in_ = open(input_path, mode="r", encoding="utf-8")
             except FileNotFoundError:
                 print(f"myshell: no such file: {input_path}")
                 raise ParsingError
@@ -43,18 +51,17 @@ class Instruction:
                 raise ParsingError
         if output_path is not None:
             try:
-                self.out_ = open(output_path, mode="w", encoding="utf-8")
+                self.context.out = open(output_path, mode="w", encoding="utf-8")
             except OSError:
                 print(f"myshell: cannot write file: {output_path}")
                 raise ParsingError
 
-        if len(args) == 0:
+        if len(self.args) == 0:
             raise ParsingError
-        if args[0] in command_dict:
-            self.name = args[0]
-            del args[0]
-        self.args = args
+        if self.args[0] in command_dict:
+            self.name = self.args[0]
+            del self.args[0]
 
-    async def execute(self, context: Context):
+    async def execute(self):
         command = command_dict[self.name]() if self.name is not None else OtherCommand()
         await command.execute(self.args, self.context)

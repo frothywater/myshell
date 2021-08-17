@@ -1,4 +1,7 @@
-from myshell.context import Context
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from myshell.context import Context
 
 
 class Command:
@@ -14,7 +17,7 @@ class Command:
         self.usage = usage
         self.flags = flags
 
-    async def execute(self, args: list[str], context: Context):
+    async def execute(self, args: list[str], context: "Context"):
         pass
 
     def help_str(self) -> str:
