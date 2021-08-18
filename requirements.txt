@@ -1,0 +1,2 @@
+aioconsole==0.3.1; python_version >= "3.6" \
+    --hash=sha256:7c038bb40b7690bf5be6b17154830b7bff25e7be1c02d8420a346c3efbd5d8e5
