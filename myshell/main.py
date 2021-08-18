@@ -2,6 +2,8 @@ import asyncio
 import os
 import signal
 
+import aioconsole
+
 from myshell.environment import Environment
 from myshell.error import ParsingError
 
@@ -24,7 +26,7 @@ class App:
 
     async def run(self):
         while True:
-            s = input(f"({os.getcwd()}) $ ")
+            s = await aioconsole.ainput(f"({os.getcwd()}) $ ")
             s = s.strip()
             if s == "exit" or s.startswith("exit "):
                 break

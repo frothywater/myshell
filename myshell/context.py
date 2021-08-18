@@ -1,7 +1,6 @@
 import os
 import signal
 import sys
-from asyncio import Task
 from asyncio.subprocess import Process
 from typing import TYPE_CHECKING, Optional, TextIO
 
@@ -22,7 +21,6 @@ class Context:
         self.err = err
         self.environment = environment
         self.process: Optional[Process] = None
-        self.task: Optional[Task] = None
         self.in_suppressed: bool = False
 
     def read(self) -> str:

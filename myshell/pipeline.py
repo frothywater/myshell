@@ -34,7 +34,8 @@ class Pipeline:
         self.set_pipes()
 
         for inst in self.instructions:
-            inst.set_redirection()
+            if inst.name != "exec":
+                inst.set_redirection()
 
     def set_pipes(self):
         insts = self.instructions

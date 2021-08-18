@@ -30,12 +30,17 @@ def get_redirection(args: list[str], symbol: str) -> Optional[str]:
 
 class Instruction:
     def __init__(self, args: list[str], environment: "Environment"):
-        self.name: Optional[str] = None
         self.args = args
+        self.name: Optional[str] = None
+        if len(self.args) == 0:
+            raise ParsingError
+        if self.args[0] in command_dict:
+            self.name = self.args[0]
+            del self.args[0]
+        self.command_text = " ".join(args)
         self.context = Context(
             environment.in_, environment.out, environment.err, environment
         )
-        self.command_text = " ".join(args)
 
     def set_redirection(self):
         input_path = get_redirection(self.args, "<")
@@ -55,12 +60,6 @@ class Instruction:
             except OSError:
                 print(f"myshell: cannot write file: {output_path}")
                 raise ParsingError
-
-        if len(self.args) == 0:
-            raise ParsingError
-        if self.args[0] in command_dict:
-            self.name = self.args[0]
-            del self.args[0]
 
     async def execute(self):
         command = command_dict[self.name]() if self.name is not None else OtherCommand()
