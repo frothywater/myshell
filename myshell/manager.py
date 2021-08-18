@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import asyncio
 from typing import TYPE_CHECKING, Optional
 

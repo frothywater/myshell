@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 

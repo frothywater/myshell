@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from typing import TYPE_CHECKING, Optional
 
 from myshell.commands import command_dict as original_dict

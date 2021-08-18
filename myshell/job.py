@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import asyncio
 from asyncio import Task
 from enum import Enum
