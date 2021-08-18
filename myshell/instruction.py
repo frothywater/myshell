@@ -13,13 +13,15 @@ from myshell.error import ParsingError
 command_dict = original_dict.copy()
 command_dict["help"] = HelpCommand
 
+redirect_symbols = ["<", ">", ">>"]
 
-def get_redirection(args: list[str], symbol: str) -> Optional[str]:
+
+def get_redirect(args: list[str], symbol: str) -> Optional[str]:
     result: Optional[str] = None
     while True:
         try:
             index = args.index(symbol)
-            if index == len(args) - 1 or args[index + 1] in ["<", ">"]:
+            if index == len(args) - 1 or args[index + 1] in redirect_symbols:
                 raise ParsingError
             result = args[index + 1]
             del args[index : index + 2]
@@ -42,9 +44,14 @@ class Instruction:
             environment.in_, environment.out, environment.err, environment
         )
 
-    def set_redirection(self):
-        input_path = get_redirection(self.args, "<")
-        output_path = get_redirection(self.args, ">")
+    def get_output(self) -> tuple[Optional[str], str]:
+        path = get_redirect(self.args, ">")
+        path_appending = get_redirect(self.args, ">>")
+        return (path_appending, "a") if path_appending is not None else (path, "w")
+
+    def set_redirect(self):
+        input_path = get_redirect(self.args, "<")
+        output_path, write_mode = self.get_output()
         if input_path is not None:
             try:
                 self.context.in_ = open(input_path, mode="r", encoding="utf-8")
@@ -56,7 +63,7 @@ class Instruction:
                 raise ParsingError
         if output_path is not None:
             try:
-                self.context.out = open(output_path, mode="w", encoding="utf-8")
+                self.context.out = open(output_path, mode=write_mode, encoding="utf-8")
             except OSError:
                 print(f"myshell: cannot write file: {output_path}")
                 raise ParsingError
