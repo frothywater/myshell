@@ -17,6 +17,7 @@ redirect_symbols = ["<", ">", ">>"]
 
 
 def get_redirect(args: list[str], symbol: str) -> Optional[str]:
+    """返回指定重定向符号的路径，若没有则返回`None`，同时将符号和路径从参数列表中删除"""
     result: Optional[str] = None
     while True:
         try:
@@ -31,25 +32,32 @@ def get_redirect(args: list[str], symbol: str) -> Optional[str]:
 
 
 class Instruction:
+    """一个指令
+
+    是本程序抽象出来的一个结构，表示一个命令的实例，用以处理单个命令的重定向"""
+
     def __init__(self, args: list[str], environment: "Environment"):
         self.args = args
         self.name: Optional[str] = None
         if len(self.args) == 0:
             raise ParsingError
+        # 在命令字典中找到对应的命令
         if self.args[0] in command_dict:
             self.name = self.args[0]
             del self.args[0]
         self.command_text = " ".join(args)
         self.context = Context(
             environment.in_, environment.out, environment.err, environment
-        )
+        )  # 从程序环境中得到默认的输入输出流
 
     def get_output(self) -> tuple[Optional[str], str]:
+        """返回(可能的输出文件路径, 文件打开方式)"""
         path = get_redirect(self.args, ">")
         path_appending = get_redirect(self.args, ">>")
         return (path_appending, "a") if path_appending is not None else (path, "w")
 
     def set_redirect(self):
+        """设置命令的重定向"""
         input_path = get_redirect(self.args, "<")
         output_path, write_mode = self.get_output()
         if input_path is not None:
@@ -69,5 +77,6 @@ class Instruction:
                 raise ParsingError
 
     async def execute(self):
+        """执行指令"""
         command = command_dict[self.name]() if self.name is not None else OtherCommand()
         await command.execute(self.args, self.context)
